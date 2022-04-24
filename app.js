@@ -1,7 +1,8 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
-const campgroundRoutes = require('./routes/campgroundRoutes')
+const campgroundRoutes = require("./routes/campgroundRoutes");
+const methodOverride = require("method-override");
 
 const app = express();
 const port = process.env.PORT || 8080;
@@ -24,10 +25,12 @@ mongoose
   });
 
 // middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(methodOverride("_method"));
 
 // routes
 app.get("/", (req, res) => {
   res.render("home");
 });
 
-app.use('/campground', campgroundRoutes)
+app.use("/campgrounds", campgroundRoutes);
