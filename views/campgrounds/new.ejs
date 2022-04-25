@@ -1,28 +1,41 @@
-<!DOCTYPE html>
-<html lang="en">
-<%- include('../partials/head') %>
+<% layout('layouts/boilerplate') %>
 
-<body>
-  <h1>create new camp</h1>
-  <form action="/campgrounds" method="POST">
-    <div>
-      <label for="title">Title</label>
-      <input type="text" id="title" name="campground[title]">
-    </div>
+<div class="row">
+  <h1 class="text-center">New Campground</h1>
+  <div class="col-6 offset-3">
+    <form action="/campgrounds" method="POST">
+      <div class="mb-3">
+        <label class="form-label" for="title">Title</label>
+        <input class="form-control" type="text" id="title" name="campground[title]">
+      </div>
 
-    <div>
-      <label for="location">Location</label>
-      <input type="text" id="location" name="campground[location]">
-    </div>
+      <div class="mb-3">
+        <label class="form-label" for="location">Location</label>
+        <input class="form-control" type="text" id="location" name="campground[location]">
+      </div>
 
-    <div>
-      <label for="price">Price</label>
-      <input type="text" id="price" name="campground[price]">
-    </div>
-    <button type="submit">Add campground</button>
-  </form>
+      <div class="mb-3">
+        <label class="form-label" for="image">Image Url</label>
+        <input class="form-control" type="text" id="image" name="campground[image]">
+      </div>
 
-  <%- include('../partials/footer') %>
-</body>
+      <div class="mb-3">
+        <label class="form-label" for="price">Price</label>
+        <div class="input-group">
+          <span class="input-group-text" id="price-label">$</span>
+          <input type="text" class="form-control" placeholder="0.00" aria-label="price" aria-describedby="price-label" name="campground[price]">
+        </div>
+        <!-- <input class="form-control" type="text" id="price" name="campground[price]"> -->
+      </div>
 
-</html>
+      <div class="mb-3">
+        <label class="form-label" for="description">Description</label>
+        <textarea class="form-control" type="text" id="description" name="campground[description]"></textarea>
+      </div>
+
+      <div class="mb-3">
+        <button class="btn btn-success" type="submit">Add campground</button>
+      </div>
+    </form>
+  </div>
+</div>

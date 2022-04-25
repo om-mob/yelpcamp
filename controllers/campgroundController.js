@@ -16,8 +16,7 @@ const campgrounds_new_get = async (req, res) => {
 };
 
 const campgrounds_new_post = async (req, res) => {
-  const { title, location } = req.body.campground;
-  const newCamp = await new Campground({ title, location });
+  const newCamp = await new Campground({ ...req.body.campground });
   await newCamp.save();
   res.redirect(`/campgrounds/${newCamp._id}`);
 };

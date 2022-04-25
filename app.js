@@ -3,10 +3,12 @@ const mongoose = require("mongoose");
 const path = require("path");
 const campgroundRoutes = require("./routes/campgroundRoutes");
 const methodOverride = require("method-override");
+const ejsMate = require('ejs-mate')
 
 const app = express();
 const port = process.env.PORT || 8080;
 
+app.engine('ejs', ejsMate)
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
