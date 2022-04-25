@@ -8,6 +8,7 @@ const campgrounds_index = async (req, res) => {
 const campgrounds_show = async (req, res) => {
   const { id } = req.params;
   const camp = await Campground.findById(id);
+  // if (!camp) throw new Error('Error')
   res.render("campgrounds/show", { camp });
 };
 
