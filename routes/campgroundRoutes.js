@@ -1,3 +1,4 @@
+const ExpressError = require('../utils/expressError')
 const express = require("express");
 const {
   campgrounds_index,
@@ -29,9 +30,10 @@ router.put("/:id", ValidateCampground, campgrounds_edit_put);
 // Delete
 router.delete("/:id", campgrounds_delete);
 
-// router.all("*", (req, res, next) => {
-//   next(new ExpressError(404, 'Page Not Found'))
-// })
+// Handle Error
+router.all("*", (req, res, next) => {
+  next(new ExpressError(404, 'Page Not Found'))
+})
 
 router.use((err, req, res, next) => {
   const { msg = "Something is wrong", statusCode = 500 } = err;
