@@ -9,9 +9,6 @@ const {
   campgrounds_edit_put,
   campgrounds_delete,
   ValidateCampground,
-  validateReview,
-  review_new_post,
-  review_delete,
 } = require("../controllers/campgroundController");
 
 const router = express.Router();
@@ -32,10 +29,6 @@ router.put("/:id", ValidateCampground, campgrounds_edit_put);
 
 // Delete
 router.delete("/:id", campgrounds_delete);
-
-/******************** Reviews *********************/
-router.post("/:id/reviews", validateReview, review_new_post);
-router.delete("/:id/reviews/:reviewId", review_delete)
 
 // Handle Error
 router.all("*", (req, res, next) => {
