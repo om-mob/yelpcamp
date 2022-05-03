@@ -11,24 +11,27 @@ const {
   ValidateCampground,
 } = require("../controllers/campgroundController");
 
+// middlewares
+const { isLoggedIn } = require("../middlewares");
+
 const router = express.Router();
 
 // View all
 router.get("/", campgrounds_index);
 
 // create
-router.get("/new", campgrounds_new_get);
-router.post("/", ValidateCampground, campgrounds_new_post);
+router.get("/new", isLoggedIn, campgrounds_new_get);
+router.post("/", isLoggedIn, ValidateCampground, campgrounds_new_post);
 
 // Read
 router.get("/:id", campgrounds_show);
 
 // Update
-router.get("/:id/edit", campgrounds_edit_get);
-router.put("/:id", ValidateCampground, campgrounds_edit_put);
+router.get("/:id/edit", isLoggedIn, campgrounds_edit_get);
+router.put("/:id", isLoggedIn, ValidateCampground, campgrounds_edit_put);
 
 // Delete
-router.delete("/:id", campgrounds_delete);
+router.delete("/:id", isLoggedIn, campgrounds_delete);
 
 // Handle Error
 router.all("*", (req, res, next) => {
