@@ -61,6 +61,7 @@ app.use(flash());
 app.use(passport.initialize()); // initialize passport
 app.use(passport.session()); // use passport session
 passport.use(new localStrategy(User.authenticate())); // authenticate using any strategy
+
 passport.serializeUser(User.serializeUser()); // serialize and deserialize model (is it always user OR it is because the model is called User)
 passport.deserializeUser(User.deserializeUser());
 
@@ -74,10 +75,6 @@ app.get("/makeuser", async (req, res) => {
   res.send(newUser);
 });
 
-// routes
-app.get("/", (req, res) => {
-  res.render("home");
-});
 
 // local vars
 app.use((req, res, next) => {
@@ -85,6 +82,12 @@ app.use((req, res, next) => {
   res.locals.error = req.flash("error");
   res.locals.user = req.user
   next();
+});
+
+
+// routes
+app.get("/", (req, res) => {
+  res.render("home");
 });
 
 app.use("/campgrounds/:id/reviews", reviewRoutes);

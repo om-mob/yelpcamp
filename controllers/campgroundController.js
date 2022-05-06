@@ -12,7 +12,15 @@ const campgrounds_index = catchAsync(async (req, res) => {
 
 const campgrounds_show = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const camp = await Campground.findById(id).populate("reviews");
+
+  const camp = await Campground.findById(id)
+    .populate({
+      path: "reviews",
+      populate: { path: "author", select: "username" },
+      select: "body rating author createdAt",
+    })
+    .populate({ path: "author", select: "username" });
+
   if (!camp) {
     req.flash("error", "Campground Doesn't exist");
     return res.redirect("/campgrounds");
@@ -25,7 +33,9 @@ const campgrounds_new_get = (req, res) => {
 };
 
 const campgrounds_new_post = catchAsync(async (req, res, next) => {
-  const newCamp = await new Campground({ ...req.body.campground });
+  // no need to get the author --(from users collections)-- It's already in req.user (local vars)
+  const newCamp = await new Campground({ ...req.body.campground }); // create camp ground
+  newCamp.author = req.user._id; // Set author
   await newCamp.save();
   req.flash("success", "New Campground Created Successfully");
   res.redirect(`/campgrounds/${newCamp._id}`);
@@ -33,11 +43,16 @@ const campgrounds_new_post = catchAsync(async (req, res, next) => {
 
 const campgrounds_edit_get = catchAsync(async (req, res) => {
   const { id } = req.params;
-  const campground = await Campground.findById(id);
+  const campground = await Campground.findById(id).populate("author", [
+    "username",
+  ]);
+
   if (!campground) {
+    // Check if campground Exists
     req.flash("error", "Campground Doesn't exist");
-    return res.redirect("/campgrounds");
+    return res.redirect(`/campgrounds`);
   }
+
   res.render("campgrounds/edit", { campground });
 });
 

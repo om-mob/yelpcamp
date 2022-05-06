@@ -11,6 +11,8 @@ const register_post = catchAsync(async (req, res) => {
     const { username, password, email } = req.body;
     const user = new User({ username, email });
     const newUser = await User.register(user, password);
+
+    // login immediatlly after register
     req.login(newUser, (err) => {
       if (err) return next(err);
       req.flash("success", "Welcome to Yelp Camp");
@@ -28,7 +30,11 @@ const login_get = (req, res) => {
 
 const login_post = catchAsync(async (req, res) => {
   req.flash("success", "Welcome Back!");
-  const redirectUrl = req.session.returnTo || "/campgrounds";
+  let redirectUrl = req.session.returnTo || "/campgrounds";
+  
+  if (redirectUrl.includes("/reviews"))  // strip away /reviews
+     redirectUrl = redirectUrl.split("/").slice(0, 3).join('/');
+
   delete req.session.returnTo;
   res.redirect(redirectUrl);
 });
@@ -40,6 +46,11 @@ const logout = (req, res) => {
 };
 
 // middleware
+const authenticateLocal = () => {
+  const options = { failureFlash: true, failureRedirect: "/login" };
+  return passport.authenticate("local", options);
+};
+
 const authenticate = passport.authenticate("local", {
   failureFlash: true,
   failureRedirect: "/login",
@@ -54,4 +65,5 @@ module.exports = {
 
   // middleware
   authenticate,
+  authenticateLocal,
 };

@@ -12,7 +12,7 @@ router
 router
   .route("/login")
   .get(userController.login_get)
-  .post(userController.authenticate, userController.login_post);
+  .post(userController.authenticateLocal(), userController.login_post);
 
 router.route("/logout").get(userController.logout);
 

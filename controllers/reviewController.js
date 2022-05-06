@@ -10,13 +10,12 @@ const review_new_post = catchAsync(async (req, res) => {
   const { rating, body } = req.body.review;
   const campId = req.params.id;
   const campground = await Campground.findById(campId);
-  const review = await new Review({ rating, body });
+  const review = await new Review({ rating, body, author: req.user._id });
   campground.reviews.push(review);
   await review.save();
   await campground.save();
 
   req.flash('success', 'Created New Review')
-
   res.redirect(`/campgrounds/${campId}`);
 });
 

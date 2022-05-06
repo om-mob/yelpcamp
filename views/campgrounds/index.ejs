@@ -1,6 +1,6 @@
 <% layout('layouts/boilerplate') %>
   <h1>Campgrounds</h1>
-    <% campgrounds.forEach(camp => { %>
+    <% campgrounds.sort((a,b ) => b.reviews.length - a.reviews.length).forEach(camp => { %>
       <div class="card mb-3">
         <div class="row">
           <div class="col-md-4">
