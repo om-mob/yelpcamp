@@ -25,6 +25,10 @@ const register_post = catchAsync(async (req, res) => {
 });
 
 const login_get = (req, res) => {
+  if (req.user) {
+    req.flash('success', "You are already logged in")
+    return res.redirect('/campgrounds')
+  }
   res.render("users/login");
 };
 
@@ -48,13 +52,9 @@ const logout = (req, res) => {
 // middleware
 const authenticateLocal = () => {
   const options = { failureFlash: true, failureRedirect: "/login" };
-  return passport.authenticate("local", options);
+  return passport.authenticate("local", options); // provided by passport.set(strategy)
 };
 
-const authenticate = passport.authenticate("local", {
-  failureFlash: true,
-  failureRedirect: "/login",
-});
 
 module.exports = {
   register_get,
@@ -64,6 +64,5 @@ module.exports = {
   logout,
 
   // middleware
-  authenticate,
   authenticateLocal,
 };

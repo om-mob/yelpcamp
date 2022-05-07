@@ -1,17 +1,22 @@
+// modules
 const express = require("express");
 const mongoose = require("mongoose");
+const session = require("express-session");
+const flash = require("connect-flash");
+const passport = require("passport");
 const path = require("path");
+// dependencies -- Replacable
+const methodOverride = require("method-override");
+const ejsMate = require("ejs-mate");
+// utils
+const ExpressError = require("./utils/expressError");
+//configs
+const initializePassport = require('./configs/passport.config')
+const sessionConfig = require('./configs/session.config')
+// Routes
 const campgroundRoutes = require("./routes/campgroundRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const userRoutes = require("./routes/userRoutes");
-const methodOverride = require("method-override");
-const ejsMate = require("ejs-mate");
-const session = require("express-session");
-const flash = require("connect-flash");
-const ExpressError = require("./utils/expressError");
-const passport = require("passport");
-const localStrategy = require("passport-local");
-const User = require("./models/user");
 
 // General Settings
 const app = express();
@@ -42,38 +47,16 @@ app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
 
 // sessions
-const sessionConfig = {
-  secret: "secret",
-  resave: false,
-  saveUninitialized: true,
-  cookie: {
-    httpOnly: true,
-    expires: Date.now() + 7 * 24 * 60 * 60 * 1000,
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  },
-};
 app.use(session(sessionConfig));
 
 // flash
 app.use(flash());
 
-// passport -- 5 lines
-app.use(passport.initialize()); // initialize passport
-app.use(passport.session()); // use passport session
-passport.use(new localStrategy(User.authenticate())); // authenticate using any strategy
-
-passport.serializeUser(User.serializeUser()); // serialize and deserialize model (is it always user OR it is because the model is called User)
-passport.deserializeUser(User.deserializeUser());
-
-// testing something -- DELETE LATER
-app.get("/makeuser", async (req, res) => {
-  const user = new User({ email: "colt2@gmail.com", username: "colt2" });
-  console.log(user);
-  const newUser = await User.register(user, "password");
-
-  // await user.save() // No longer Needed
-  res.send(newUser);
-});
+/***** passport *****/
+initializePassport(passport)
+// Passport Middlewares
+app.use(passport.initialize());
+app.use(passport.session());
 
 
 // local vars

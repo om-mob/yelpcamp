@@ -14,12 +14,11 @@ module.exports.isAuthor = (resourceModel) => {
   return async (req, res, next) => {
     const resource = await resourceModel
       .findById(
-        resourceModel instanceof Campground
+        resourceModel === Campground
           ? req.params.id
           : req.params.reviewId
       )
       .populate("author", ["username"]);
-
     if (!resource.author?.equals(req.user?._id)) {
       req.flash("error", `You are not ${resource.author?.username}`);
       return res.redirect(`/campgrounds/${req.params.id}`);
