@@ -1,5 +1,7 @@
-const ExpressError = require("../utils/expressError");
 const express = require("express");
+const router = express.Router();
+
+// controller
 const {
   campgrounds_index,
   campgrounds_show,
@@ -8,14 +10,10 @@ const {
   campgrounds_edit_get,
   campgrounds_edit_put,
   campgrounds_delete,
-  ValidateCampground,
 } = require("../controllers/campgroundController");
-
 // middlewares
-const { isLoggedIn, isAuthor } = require("../controllers/middlewares");
-const Campground = require('../models/campground')
+const { isLoggedIn, isCampgroundAutor, ValidateCampground, handle_error, page_not_found } = require("../controllers/middlewares");
 
-const router = express.Router();
 
 // View all
 router.get("/", campgrounds_index);
@@ -28,22 +26,15 @@ router.post("/", isLoggedIn, ValidateCampground, campgrounds_new_post);
 router.get("/:id", campgrounds_show);
 
 // Update
-router.get("/:id/edit", isLoggedIn, isAuthor(Campground), campgrounds_edit_get);
-router.put("/:id", isLoggedIn, isAuthor, ValidateCampground, campgrounds_edit_put);
+router.get("/:id/edit", isLoggedIn, isCampgroundAutor, campgrounds_edit_get);
+router.put("/:id", isLoggedIn, isCampgroundAutor, ValidateCampground, campgrounds_edit_put);
 
 // Delete
-router.delete("/:id", isLoggedIn, isAuthor, campgrounds_delete);
+router.delete("/:id", isLoggedIn, isCampgroundAutor, campgrounds_delete);
 
 // Handle Error
-router.all("*", (req, res, next) => {
-  next(new ExpressError(404, "Page Not Found"));
-});
-
-router.use((err, req, res, next) => {
-  const { msg = "Something is wrong", statusCode = 500 } = err;
-  if (!err.msg) err.msg = "Something went wrong";
-  res.status(statusCode).render("errors", { err });
-});
+router.all("*", page_not_found);
+router.use(handle_error);
 
 // router
 //   .route("/:id")

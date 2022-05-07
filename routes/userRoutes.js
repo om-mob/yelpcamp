@@ -1,8 +1,9 @@
 const express = require("express");
-const res = require("express/lib/response");
 const router = express.Router();
-
+// controller
 const userController = require("../controllers/userController");
+// middlewares
+const { authenticateLocal } = require("../controllers/middlewares");
 
 router
   .route("/register")
@@ -12,7 +13,7 @@ router
 router
   .route("/login")
   .get(userController.login_get)
-  .post(userController.authenticateLocal(), userController.login_post);
+  .post(authenticateLocal, userController.login_post);
 
 router.route("/logout").get(userController.logout);
 

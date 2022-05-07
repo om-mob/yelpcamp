@@ -10,7 +10,7 @@ function initialize(passport) {
 /* 
 [User.authenticate(), User.serializeUser(), User.deserializeUser()]
 These functions/methods Came from passport-local Mongoose. Usually you write them urself in passport.config.js file.
-Check out Kyle's video "Node.js Passport Login System Tutorial" to see the implementation.
+Check out Kyle's video "Node.js Passport Login System Tutorial" to see an example implementation.
 */
 
 module.exports = initialize

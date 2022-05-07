@@ -1,10 +1,9 @@
 const Campground = require("../models/campground");
 const catchAsync = require("../utils/catchAsync");
-const ExpressError = require("../utils/expressError");
-const { campgroundSchema } = require("../schemas");
+// No longer needs ExpressError -- Moved to middleware
+// No longer Need joiSchemas -- Moved to middleware
 
-/*********************************************************************/
-/******************** campground controllers *************************/
+
 const campgrounds_index = catchAsync(async (req, res) => {
   const campgrounds = await Campground.find({});
   res.render("campgrounds/index", { campgrounds });
@@ -76,18 +75,6 @@ const campgrounds_delete = catchAsync(async (req, res) => {
   res.redirect("/campgrounds");
 });
 
-/*********************************************************/
-/******************** Middleware *************************/
-
-const ValidateCampground = (req, res, next) => {
-  const { error } = campgroundSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((detail) => detail.message).join("\n");
-    throw new ExpressError(400, msg);
-  }
-  next();
-};
-
 module.exports = {
   campgrounds_index,
   campgrounds_show,
@@ -96,8 +83,4 @@ module.exports = {
   campgrounds_edit_get,
   campgrounds_edit_put,
   campgrounds_delete,
-
-  // middlewares
-  ValidateCampground,
 };
-//

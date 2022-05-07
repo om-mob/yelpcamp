@@ -8,8 +8,6 @@ const path = require("path");
 // dependencies -- Replacable
 const methodOverride = require("method-override");
 const ejsMate = require("ejs-mate");
-// utils
-const ExpressError = require("./utils/expressError");
 //configs
 const initializePassport = require("./configs/passport.config");
 const sessionConfig = require("./configs/session.config");
@@ -17,6 +15,8 @@ const sessionConfig = require("./configs/session.config");
 const campgroundRoutes = require("./routes/campgroundRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const userRoutes = require("./routes/userRoutes");
+// Middlewares -- for Error Handling
+const {page_not_found, handle_error } = require('./controllers/middlewares')
 
 
 // General Settings
@@ -45,7 +45,7 @@ mongoose
   });
 
 
-  // middleware
+/*********** middlewares ***********/
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
@@ -83,11 +83,6 @@ app.use("/", userRoutes);
 
 
 // Error Handling
-app.all("*", (req, res, next) => {
-  next(new ExpressError(404, "Page Not Found"));
-});
+app.all("*", page_not_found);
 
-app.use((err, req, res, next) => {
-  const { msg = "Something is wrong", statusCode = 500 } = err;
-  res.status(statusCode).render("errors", { err });
-});
+app.use(handle_error);

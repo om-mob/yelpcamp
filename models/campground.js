@@ -15,7 +15,10 @@ const CampgroundSchema = new Schema({
     type: Number,
     required: true,
   },
-  description: {},
+  description: {
+    type: String,
+    required: true,
+  },
   location: {
     type: String,
     required: true,
@@ -23,6 +26,7 @@ const CampgroundSchema = new Schema({
   author: {
     type: Schema.Types.ObjectId,
     ref: "User",
+    required: true,
   },
   reviews: [
     {

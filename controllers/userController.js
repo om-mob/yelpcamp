@@ -1,6 +1,6 @@
 const User = require("../models/user");
 const catchAsync = require("../utils/catchAsync");
-const passport = require("passport");
+
 
 const register_get = (req, res) => {
   res.render("users/register");
@@ -49,12 +49,6 @@ const logout = (req, res) => {
   res.redirect("/login");
 };
 
-// middleware
-const authenticateLocal = () => {
-  const options = { failureFlash: true, failureRedirect: "/login" };
-  return passport.authenticate("local", options); // provided by passport.set(strategy)
-};
-
 
 module.exports = {
   register_get,
@@ -62,7 +56,4 @@ module.exports = {
   login_get,
   login_post,
   logout,
-
-  // middleware
-  authenticateLocal,
 };

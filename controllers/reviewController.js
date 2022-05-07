@@ -1,11 +1,10 @@
 const Review = require("../models/review");
 const Campground = require("../models/campground");
 const catchAsync = require("../utils/catchAsync");
-const ExpressError = require("../utils/expressError");
-const { reviewSchema } = require("../schemas");
+// No longer needs ExpressError -- Moved to middleware
+// No longer Need joiSchemas -- Moved to middleware
 
-/****************************************/
-/********** review controllers **********/
+
 const review_new_post = catchAsync(async (req, res) => {
   const { rating, body } = req.body.review;
   const campId = req.params.id;
@@ -30,24 +29,7 @@ const review_delete = catchAsync(async (req, res) => {
 });
 
 
-/*********************************************************/
-/******************** Middleware *************************/
-const validateReview = (req, res, next) => {
-  const { error } = reviewSchema.validate(req.body);
-  if (error) {
-    const msg = error.details.map((detail) => detail.message).join("\n");
-    throw new ExpressError(400, msg);
-  }
-  next();
-};
-
-
-
 module.exports = {
   review_new_post,
   review_delete,
-
-  // middlewares
-  validateReview,
-
 };
