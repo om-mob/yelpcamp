@@ -9,14 +9,23 @@ const campgrounds_index = catchAsync(async (req, res) => {
   res.render("campgrounds/index", { campgrounds });
 });
 
+/*
+campgrounds_show
+1. Model
+  get the camp from database (using the id attached to request params)
+2. View
+  Renders the show page (passing camp to it)
+
+Guard clauses: camp -with provided id- might not exist
+*/
 const campgrounds_show = catchAsync(async (req, res) => {
   const { id } = req.params;
 
   const camp = await Campground.findById(id)
     .populate({
       path: "reviews",
-      populate: { path: "author", select: "username" },
       select: "body rating author createdAt",
+      populate: { path: "author", select: "username" },
     })
     .populate({ path: "author", select: "username" });
 
@@ -31,6 +40,15 @@ const campgrounds_new_get = (req, res) => {
   res.render("campgrounds/new");
 };
 
+/**
+ * campgrounds_new_post
+ * 1. Pulls Data from request body
+ * 2. Model
+ *  2.1 creates campground
+ *  2.2 saves campground to Database
+ * 3. View
+ *  No Action
+ */
 const campgrounds_new_post = catchAsync(async (req, res, next) => {
   // no need to get the author --(from users collections)-- It's already in req.user (local vars)
   const newCamp = await new Campground({ ...req.body.campground }); // create camp ground

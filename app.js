@@ -16,7 +16,7 @@ const campgroundRoutes = require("./routes/campgroundRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const userRoutes = require("./routes/userRoutes");
 // Middlewares -- for Error Handling
-const {page_not_found, handle_error } = require('./controllers/middlewares')
+const { page_not_found, handle_error } = require('./controllers/middlewares')
 
 
 // General Settings
@@ -84,5 +84,4 @@ app.use("/", userRoutes);
 
 // Error Handling
 app.all("*", page_not_found);
-
 app.use(handle_error);

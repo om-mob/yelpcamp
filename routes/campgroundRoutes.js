@@ -33,8 +33,8 @@ router.put("/:id", isLoggedIn, isCampgroundAutor, ValidateCampground, campground
 router.delete("/:id", isLoggedIn, isCampgroundAutor, campgrounds_delete);
 
 // Handle Error
-router.all("*", page_not_found);
-router.use(handle_error);
+// router.all("*", page_not_found);
+// router.use(handle_error);
 
 // router
 //   .route("/:id")
