@@ -6,7 +6,30 @@
   <div class="col-6">
     <div class="card mb-3">
 
-      <img src="<%= camp.image %>" class="card-img-top" alt="...">
+      <!-- Start Of: Images Carousel -->
+      <div id="campgroundCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <!-- Images -->
+           <% camp.images?.forEach((img, idx) => { %> 
+              <div class="carousel-item <%= idx === 0 ? 'active' : '' %> ">
+                <img src="<%= img.url %>" class="d-block w-100" alt="<%= img.filename %> ">
+              </div>
+
+      <% }) %> 
+        </div>
+        <!-- Controls/Buttons -->
+        <% if (camp.images?.length > 1) { %> 
+        <button class="carousel-control-prev" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
+        <% } %> 
+      </div>
+      <!-- End of: Images Carousel -->
 
       <!-- Card Body: Title and Description -->
       <div class="card-body">

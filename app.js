@@ -1,3 +1,5 @@
+if (process.env.NODE_ENV !== 'production') require('dotenv').config();
+
 // modules
 const express = require("express");
 const mongoose = require("mongoose");
@@ -16,7 +18,7 @@ const campgroundRoutes = require("./routes/campgroundRoutes");
 const reviewRoutes = require("./routes/reviewRoutes");
 const userRoutes = require("./routes/userRoutes");
 // Middlewares -- for Error Handling
-const { page_not_found, handle_error } = require('./controllers/middlewares')
+const { page_not_found, handle_error } = require("./controllers/middlewares");
 
 
 // General Settings

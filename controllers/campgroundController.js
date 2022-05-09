@@ -1,8 +1,9 @@
 const Campground = require("../models/campground");
 const catchAsync = require("../utils/catchAsync");
+const createCampground = require("../utils/createCampground");
+const { updateCampground, deleteImages } = require("../utils/updateCampground");
 // No longer needs ExpressError -- Moved to middleware
 // No longer Need joiSchemas -- Moved to middleware
-
 
 const campgrounds_index = catchAsync(async (req, res) => {
   const campgrounds = await Campground.find({});
@@ -51,8 +52,14 @@ const campgrounds_new_get = (req, res) => {
  */
 const campgrounds_new_post = catchAsync(async (req, res, next) => {
   // no need to get the author --(from users collections)-- It's already in req.user (local vars)
-  const newCamp = await new Campground({ ...req.body.campground }); // create camp ground
-  newCamp.author = req.user._id; // Set author
+  const newCamp = createCampground({
+    CampgroundModel: Campground,
+    campgroundBody: req.body.campground,
+    imageFiles: req.files,
+    userId: req.user._id,
+  });
+  // const newCamp = await new Campground({ ...req.body.campground }); // create camp ground
+  // newCamp.author = req.user._id; // Set author
   await newCamp.save();
   req.flash("success", "New Campground Created Successfully");
   res.redirect(`/campgrounds/${newCamp._id}`);
@@ -73,13 +80,35 @@ const campgrounds_edit_get = catchAsync(async (req, res) => {
   res.render("campgrounds/edit", { campground });
 });
 
+/**
+ * campgrounds_edit_put:
+ * 1. get the campground
+ * 2. update the campground
+ * 3. save the campground
+ * 4. redirect
+ */
 const campgrounds_edit_put = catchAsync(async (req, res) => {
   const { id } = req.params;
+
+  const oldCamp = await Campground.findById(id);
+  const oldImages = oldCamp.images;
+
+  // Todo: 'Try to' Put These On the model schema, Dumbass!!
+  const newCampgroundData = updateCampground({
+    campgroundBody: req.body.campground,
+    imageFiles: req.files,
+    oldImages,
+  });
   const campground = await Campground.findByIdAndUpdate(
     id,
-    { ...req.body.campground },
+    { ...newCampgroundData },
     { runValidators: true }
   );
+  // Delete Images
+  if (req.body.deleteImages?.length) {
+    await deleteImages(campground, req.body.deleteImages);
+  }
+
   req.flash("success", "Campground Updated Successfully");
   res.redirect(`/campgrounds/${campground._id}`);
 });

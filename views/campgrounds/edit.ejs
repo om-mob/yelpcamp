@@ -5,7 +5,7 @@
   <div class="col-6 offset-3">
 
     <!-- Form Start -->
-    <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST" class="needs-validation" novalidate>
+    <form action="/campgrounds/<%= campground._id %>?_method=PUT" method="POST" class="needs-validation" novalidate enctype="multipart/form-data">
 
       <div class="mb-3">
         <label class="form-label" for="title">Title</label>
@@ -17,11 +17,7 @@
         <input autocomplete="off" required class="form-control" type="text" id="location" name="campground[location]" value="<%= campground.location %>">
       </div>
 
-      <div class="mb-3">
-        <label class="form-label" for="image">Image Url</label>
-        <input autocomplete="off" required class="form-control" type="text" id="image" name="campground[image]" value="<%= campground.image %>">
-      </div>
-
+      <!-- Price -->
       <div class="mb-3">
         <label class="form-label" for="price">Price</label>
         <div class="input-group">
@@ -35,10 +31,27 @@
         <textarea required class="form-control" type="text" id="description" name="campground[description]"><%= campground.description %></textarea>
       </div>
 
+      <!-- Images -->
+      <div class="mb-3">
+        <label for="images" class="form-label">Add Images</label>
+        <input class="form-control" type="file" id="images" name="campground[images]" multiple>
+      </div>
+
+      <!-- Delete Images -->
+      <% campground.images.forEach((img, idx) => { %>
+        <img src="<%= img.thumbnail %>" class="img-thumbnail"  alt="<%= img.filename %> ">
+        <div class="form-check-inline">
+          <input type="checkbox" id="image-<%= idx %>" name="deleteImages[]" value="<%= img.filename %>">
+          <label for="image-<%= idx %>">Delete</label>
+        </div>
+        <% }) %>
+
       <div class="mb-3">
         <button class="btn btn-info" type="submit">Update campground</button>
       </div>
     </form>
+
+
     <a href="/campgrounds/<%= campground._id %>">Go Back</a>
   </div>
 </div>

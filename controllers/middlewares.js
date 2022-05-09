@@ -3,6 +3,7 @@ const Review = require("../models/review");
 const { campgroundSchema, reviewSchema } = require("../models/joiSchemas");
 const ExpressError = require("../utils/expressError");
 const passport = require("passport");
+const parser = require('../configs/multer-config')
 
 // Validate
 validate = (schema) => {
@@ -43,8 +44,8 @@ isAuthor = (resourceModel) => {
         resourceModel === Campground ? req.params.id : req.params.reviewId
       )
       .populate("author", ["username"]);
-    if (!resource.author?.equals(req.user?._id)) {
-      req.flash("error", `You are not ${resource.author?.username}`);
+    if (!resource?.author?.equals(req.user?._id)) {
+      req.flash("error", `You are not ${resource?.author?.username}`);
       return res.redirect(`/campgrounds/${req.params.id}`);
     }
 
@@ -64,3 +65,6 @@ module.exports.handle_error = (err, req, res, next) => {
 module.exports.page_not_found = (req, res, next) => {
   next(new ExpressError(404, "Page Not Found"));
 };
+
+
+module.exports.bodyFileParser = parser.array("campground[images]")

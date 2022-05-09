@@ -12,22 +12,23 @@ const {
   campgrounds_delete,
 } = require("../controllers/campgroundController");
 // middlewares
-const { isLoggedIn, isCampgroundAutor, ValidateCampground, handle_error, page_not_found } = require("../controllers/middlewares");
-
+const { isLoggedIn, isCampgroundAutor, ValidateCampground, handle_error, page_not_found, bodyFileParser } = require("../controllers/middlewares");
+const multer = require('multer')
+const upload = multer({dest: 'uploads/'})
 
 // View all
 router.get("/", campgrounds_index);
 
 // create
 router.get("/new", isLoggedIn, campgrounds_new_get);
-router.post("/", isLoggedIn, ValidateCampground, campgrounds_new_post);
+router.post("/", isLoggedIn, bodyFileParser, ValidateCampground, campgrounds_new_post);
 
 // Read
 router.get("/:id", campgrounds_show);
 
 // Update
 router.get("/:id/edit", isLoggedIn, isCampgroundAutor, campgrounds_edit_get);
-router.put("/:id", isLoggedIn, isCampgroundAutor, ValidateCampground, campgrounds_edit_put);
+router.put("/:id", isLoggedIn, isCampgroundAutor, bodyFileParser, ValidateCampground, campgrounds_edit_put);
 
 // Delete
 router.delete("/:id", isLoggedIn, isCampgroundAutor, campgrounds_delete);
