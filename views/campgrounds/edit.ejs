@@ -38,13 +38,24 @@
       </div>
 
       <!-- Delete Images -->
-      <% campground.images.forEach((img, idx) => { %>
-        <img src="<%= img.thumbnail %>" class="img-thumbnail"  alt="<%= img.filename %> ">
-        <div class="form-check-inline">
-          <input type="checkbox" id="image-<%= idx %>" name="deleteImages[]" value="<%= img.filename %>">
-          <label for="image-<%= idx %>">Delete</label>
+      <div class="container">
+        <% campground.images.forEach((img, idx) => { %>
+        <% if (idx % 2 === 0) { %>
+        <div class="row mb-4">
+          <% } %>
+          <div class="col-sm">
+          <img src="<%= img.thumbnail %>" class="img-thumbnail" alt="<%= img.filename %> ">
+          <div class="custom-control custom-checkbox">
+            <input class="custom-control-input" type="checkbox" id="image-<%= idx %>" name="deleteImages[]" value="<%= img.filename %>">
+            <label class="custom-control-label" for="image-<%= idx %>">Delete</label>
+          </div>
         </div>
+          <% if (idx % 2 !== 0) { %>
+        </div>
+        <% } %>
+
         <% }) %>
+      </div>
 
       <div class="mb-3">
         <button class="btn btn-info" type="submit">Update campground</button>
