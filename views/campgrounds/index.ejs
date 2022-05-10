@@ -1,20 +1,19 @@
 <% layout('layouts/boilerplate') %>
-  <h1>Campgrounds</h1>
-    <% campgrounds.sort((a,b ) => b.reviews.length - a.reviews.length).forEach(camp => { %>
-      <div class="card mb-3">
-        <div class="row">
-          <div class="col-md-4">
-            <img class="img-fluid" src="<%= camp.images?.[0]?.url %>" alt="">
-          </div>
-          <div class="col-md-8">
-            <div class="card-body">
-              <h5 class="card-title"><%= camp.title %></h5>
-              <p class="card-text"><%= camp.description %></p>
-              <p class="text-muted"><%= camp.location %></p>
-              <a class="btn btn-primary" href="/campgrounds/<%= camp._id %>">View <%= camp.title %></a>
-            </div>
-          </div>
-        </div>
+<h1>Campgrounds</h1>
+<% campgrounds.sort((a,b ) => b.reviews.length - a.reviews.length).forEach(camp => { %>
+<div class="card mb-3 col">
+  <div class="row">
+    <div class="col-md-4">
+      <img class="img-fluid" src="<%= camp.images?.[0]?.url %>" alt="">
+    </div>
+    <div class="col-md-8">
+      <div class="card-body">
+        <h5 class="card-title"><%= camp.title %></h5>
+        <p class="card-text"><%= camp.description %></p>
+        <p class="text-muted"><%= camp.location.name || camp.location %></p>
+        <a class="btn btn-primary" href="/campgrounds/<%= camp._id %>">View <%= camp.title %></a>
       </div>
-        <!-- <li><a href=""></a></li> -->
-    <% }) %>
+    </div>
+  </div>
+</div>
+<% }) %>

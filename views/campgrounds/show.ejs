@@ -4,21 +4,22 @@
 
 <div class="row">
   <div class="col-6">
+    <!-- <div id='map' style='width: 400px; height: 300px;'></div> -->
     <div class="card mb-3">
 
       <!-- Start Of: Images Carousel -->
       <div id="campgroundCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-inner">
           <!-- Images -->
-           <% camp.images?.forEach((img, idx) => { %> 
-              <div class="carousel-item <%= idx === 0 ? 'active' : '' %> ">
-                <img src="<%= img.url %>" class="d-block w-100" alt="<%= img.filename %> ">
-              </div>
+          <% camp.images?.forEach((img, idx) => { %>
+          <div class="carousel-item <%= idx === 0 ? 'active' : '' %> ">
+            <img src="<%= img.url %>" class="d-block w-100" alt="<%= img.filename %> ">
+          </div>
 
-      <% }) %> 
+          <% }) %>
         </div>
         <!-- Controls/Buttons -->
-        <% if (camp.images?.length > 1) { %> 
+        <% if (camp.images?.length > 1) { %>
         <button class="carousel-control-prev" type="button" data-bs-target="#campgroundCarousel" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
@@ -27,7 +28,7 @@
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
         </button>
-        <% } %> 
+        <% } %>
       </div>
       <!-- End of: Images Carousel -->
 
@@ -40,7 +41,7 @@
       <!-- Location and Price and Author -->
       <ul class="list-group list-group-flush">
         <li class="list-group-item"><span class="text-muted">By</span> <%= camp.author.username %></li>
-        <li class="list-group-item text-muted"><%= camp.location %></li>
+        <li class="list-group-item text-muted"><%= camp.location.name || camp.location %></li>
         <li class="list-group-item">$<%= camp.price %>/night</li>
       </ul>
 
@@ -61,65 +62,82 @@
     </div>
   </div>
 
-  <!------------------- Reivews Form ------------------->
   <div class="col-6">
-    <!-- Review Form -->
-    <h2>Leave a Review</h2>
-    <form action="/campgrounds/<%= camp._id %>/reviews" method="POST" novalidate class="needs-validation my-3">
-      <div>
-
-        <!-- Star -->
-        <fieldset class="starability-basic">
-          <!-- <legend>rating:</legend> -->
-          <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
-          <input type="radio" id="first-rate1" name="review[rating]" value="1" />
-          <label for="first-rate1" title="Terrible">1 star</label>
-          <input type="radio" id="first-rate2" name="review[rating]" value="2" />
-          <label for="first-rate2" title="Not good">2 stars</label>
-          <input type="radio" id="first-rate3" name="review[rating]" value="3" />
-          <label for="first-rate3" title="Average">3 stars</label>
-          <input type="radio" id="first-rate4" name="review[rating]" value="4" />
-          <label for="first-rate4" title="Very good">4 stars</label>
-          <input type="radio" id="first-rate5" name="review[rating]" value="5" />
-          <label for="first-rate5" title="Amazing">5 stars</label>
-        </fieldset>
-        <!-- End of Stars -->
-      </div>
-      <div class="mb-3">
-        <label class="form-label" for="body">Review Text</label>
-        <textarea class="form-control" name="review[body]" id="body" rows="5" required></textarea>
-      </div>
-      <button class="btn btn-success" type="submit">Add Review</button>
-    </form>
-
-    <!-- Reviews -->
-    <% camp.reviews.sort((a,b) => b.createdAt - a.createdAt).forEach((review, idx) => { %>
-    <div class="card mb-3">
-      <div class="card-body">
-
-        <!-- Delete Button -->
-        <% if (review.author?.equals(user?._id)) { %>
-        <div class="card-body" style="position: absolute; right: 0; top: 0;">
-          <form class="d-inline" action="/campgrounds/<%= camp._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
-            <button class="btn btn-sm btn-danger" type="submit">Delete</button>
-          </form>
-        </div>
-        <% } %>
-
-        <!-- Stars -->
-        <p class="starability-result" data-rating="<%= review.rating %>">
-          Rated: <%= review.rating %> stars
-        </p>
-        <!-- End of Stars -->
-
-        <p class="card-text"><%= review.body %></p>
-        <p class="card-text"></p>
-
-
-        <h6 class="card-subtitle text-muted">by <%= review.author?.username %></h6>
-      </div>
+    <% if (camp.location.coordinates) { %> 
+    <div class="row mb-4">
+      <div id='map' style='width: 550px; height: 300px;'></div>
     </div>
-    <% }) %>
+    <% } %> 
+    <!-- </div> -->
+    <!------------------- Reivews Form ------------------->
+    <!-- <div class="col-6"> -->
+    <div class="row">
+      <!-- Review Form -->
+      <h2>Leave a Review</h2>
+      <form action="/campgrounds/<%= camp._id %>/reviews" method="POST" novalidate class="needs-validation my-3">
+        <div>
 
+          <!-- Star -->
+          <fieldset class="starability-basic">
+            <!-- <legend>rating:</legend> -->
+            <input type="radio" id="no-rate" class="input-no-rate" name="review[rating]" value="1" checked aria-label="No rating." />
+            <input type="radio" id="first-rate1" name="review[rating]" value="1" />
+            <label for="first-rate1" title="Terrible">1 star</label>
+            <input type="radio" id="first-rate2" name="review[rating]" value="2" />
+            <label for="first-rate2" title="Not good">2 stars</label>
+            <input type="radio" id="first-rate3" name="review[rating]" value="3" />
+            <label for="first-rate3" title="Average">3 stars</label>
+            <input type="radio" id="first-rate4" name="review[rating]" value="4" />
+            <label for="first-rate4" title="Very good">4 stars</label>
+            <input type="radio" id="first-rate5" name="review[rating]" value="5" />
+            <label for="first-rate5" title="Amazing">5 stars</label>
+          </fieldset>
+          <!-- End of Stars -->
+        </div>
+        <div class="mb-3">
+          <label class="form-label" for="body">Review Text</label>
+          <textarea class="form-control" name="review[body]" id="body" rows="5" required></textarea>
+        </div>
+        <button class="btn btn-success" type="submit">Add Review</button>
+      </form>
+    </div>
   </div>
+
+
+  <!-- Reviews -->
+  <div class="row mt-3">
+  <% camp.reviews.sort((a,b) => b.createdAt - a.createdAt).forEach((review, idx) => { %>
+  <div class="card mb-3">
+    <div class="card-body">
+
+      <!-- Delete Button -->
+      <% if (review.author?.equals(user?._id)) { %>
+      <div class="card-body" style="position: absolute; right: 0; top: 0;">
+        <form class="d-inline" action="/campgrounds/<%= camp._id %>/reviews/<%= review._id %>?_method=DELETE" method="POST">
+          <button class="btn btn-sm btn-danger" type="submit">Delete</button>
+        </form>
+      </div>
+      <% } %>
+
+      <!-- Stars -->
+      <p class="starability-result" data-rating="<%= review.rating %>">
+        Rated: <%= review.rating %> stars
+      </p>
+      <!-- End of Stars -->
+
+      <p class="card-text"><%= review.body %></p>
+      <p class="card-text"></p>
+
+
+      <h6 class="card-subtitle text-muted">by <%= review.author?.username %></h6>
+    </div>
+  </div>
+  <% }) %>
 </div>
+
+  <script>
+    const mapboxToken = "<%= process.env.MAPBOX_TOKEN %>";
+    const campground = <%- JSON.stringify(camp) %>;
+    const coordinates = "<%= camp.location.coordinates %>".split(',');
+  </script>
+  <script src="/js/map.js"></script>
