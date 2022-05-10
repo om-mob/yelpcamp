@@ -4,7 +4,7 @@ const Review = require("./review");
 // For Image Upload
 const cloudinary = require("../configs/multer-config/cloudinary.config");
 // For location and maps
-const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mbxGeocoding = require("@mapbox/mapbox-sdk/services/geocoding");
 const mapboxToken = process.env.MAPBOX_TOKEN;
 const geocoder = mbxGeocoding({ accessToken: mapboxToken });
 
@@ -31,11 +31,7 @@ const CampgroundSchema = new Schema(
       type: String,
       required: true,
     },
-    location: {
-      name: {
-        type: String,
-        required: true,
-      },
+    geometry: {
       type: {
         type: String,
         enum: ["Point"],
@@ -45,6 +41,10 @@ const CampgroundSchema = new Schema(
         type: [Number],
         required: true,
       },
+    },
+    location: {
+      type: String,
+      required: true,
     },
     author: {
       type: Schema.Types.ObjectId,
@@ -61,35 +61,46 @@ const CampgroundSchema = new Schema(
       },
     ],
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true } }
 );
 
-CampgroundSchema.methods.constructCampground = async function(campgroundBody, ImageFiles) {
+CampgroundSchema.virtual("properties.popupMarkup").get(function() {
+  return `
+  <strong><a href="/campgrounds/${this._id}">${this.title}</a></strong>
+  <p>${this.description.substring(0, 25)}...</p>
+  `
+});
+
+CampgroundSchema.methods.constructCampground = async function (
+  campgroundBody,
+  ImageFiles
+) {
   // Parse Images
-  const images = ImageFiles ? ImageFiles.map((f) => ({ url: f.path, filename: f.filename })) : [];
-  
+  const images = ImageFiles
+    ? ImageFiles.map((f) => ({ url: f.path, filename: f.filename }))
+    : [];
+
   // Parse Location
-  const response = await geocoder.forwardGeocode({
-    query: campgroundBody.location,
-    limit: 1
-  }).send()
-  campgroundBody.location = {
-    name: campgroundBody.location,
-    coordinates: response.body.features[0].geometry.coordinates,
-    type: 'Point'
-  }
+  const response = await geocoder
+    .forwardGeocode({
+      query: campgroundBody.location,
+      limit: 1,
+    })
+    .send();
+  campgroundBody.geometry = response.body.features[0].geometry;
   // Construct
   this.title = campgroundBody.title;
   this.price = campgroundBody.price;
   this.location = campgroundBody.location;
+  this.geometry = campgroundBody.geometry;
   this.description = campgroundBody.description;
   this.author = campgroundBody.author;
   this.images = images;
 
-  return this
-}
+  return this;
+};
 
-
+//
 CampgroundSchema.methods.updateCampground = async function ({
   campgroundBody,
   newImageFiles,
@@ -102,15 +113,13 @@ CampgroundSchema.methods.updateCampground = async function ({
   }));
 
   // Parse Location
-  const response = await geocoder.forwardGeocode({
-    query: campgroundBody.location,
-    limit: 1
-  }).send()
-  campgroundBody.location = {
-    name: campgroundBody.location,
-    coordinates: response.body.features[0].geometry.coordinates,
-    type: 'Point'
-  }
+  const response = await geocoder
+    .forwardGeocode({
+      query: campgroundBody.location,
+      limit: 1,
+    })
+    .send();
+  campgroundBody.geometry = response.body.features[0].geometry;
 
   // Update Camp
   try {
@@ -119,6 +128,7 @@ CampgroundSchema.methods.updateCampground = async function ({
         title: campgroundBody.title,
         price: campgroundBody.price,
         location: campgroundBody.location,
+        geometry: campgroundBody.geometry,
         description: campgroundBody.description,
         images: [...this.images, ...newimages],
       },

@@ -63,7 +63,7 @@
   </div>
 
   <div class="col-6">
-    <% if (camp.location.coordinates) { %> 
+    <% if (camp.geometry.coordinates) { %> 
     <div class="row mb-4">
       <div id='map' style='width: 550px; height: 300px;'></div>
     </div>
@@ -138,6 +138,6 @@
   <script>
     const mapboxToken = "<%= process.env.MAPBOX_TOKEN %>";
     const campground = <%- JSON.stringify(camp) %>;
-    const coordinates = "<%= camp.location.coordinates %>".split(',');
+    const coordinates = "<%= camp.geometry.coordinates %>".split(',');
   </script>
   <script src="/js/map.js"></script>
