@@ -1,4 +1,3 @@
-console.log(coordinates);
 mapboxgl.accessToken = `${mapboxToken}`;
 const map = new mapboxgl.Map({
   container: "map", // container ID
@@ -7,6 +6,9 @@ const map = new mapboxgl.Map({
   center: coordinates, // starting position [lng, lat]
   zoom: 2, // starting zoom
 });
+
+map.addControl(new mapboxgl.NavigationControl())
+
 
 new mapboxgl.Marker()
   .setLngLat(coordinates)

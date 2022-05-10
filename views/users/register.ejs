@@ -1,48 +1,38 @@
-<% layout('layouts/boilerplate') %>
-<div class="row">
-  <h1 class="text-center">Register</h1>
-  <div class="col-6 offset-3">
+<% layout('layouts/boilerplate')%>
+<div class="container d-flex justify-content-center align-items-center my-5">
+  <div class="row">
+    <div class="col-md-6 offset-md-3 col-xl-4 offset-xl-4">
+      <div class="card shadow">
+        <img src="https://images.unsplash.com/photo-1571863533956-01c88e79957e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1267&q=80" alt="" class="card-img-top" />
+        <div class="card-body">
+          <h5 class="card-title">Register</h5>
+          <form action="/register" method="POST" class="needs-validation" novalidate>
+            <div class="mb-3">
+              <label class="form-label" for="username">Username</label>
+              <input class="form-control" type="text" id="username" name="username" required autofocus>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="email">Email</label>
+              <input class="form-control" type="email" id="email" name="email" required>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label" for="password">Password</label>
+              <input class="form-control" type="password" id="password" name="password" required>
+              <div class="valid-feedback">
+                Looks good!
+              </div>
+            </div>
+            <button class="btn btn-success btn-block">Register</button>
+          </form>
 
-    <!-- Start of the Form -->
-    <form action="/register" method="POST" class="needs-validation" novalidate>
-
-      <div class="mb-3">
-        <label class="form-label" for="email">Email</label> <!-- label -->
-        <input autocomplete="off" required class="form-control" type="email" id="email" name="email"> <!-- control -->
-        <div class="valid-feedback">
-          <!-- feedback (valid) -->
-        </div>
-        <div class="invalid-feedback">
-          <!-- feedback (invalid) -->
-          Email Required.
         </div>
       </div>
-
-      <div class="mb-3">
-        <label class="form-label" for="username">username</label>
-        <input autocomplete="off" required class="form-control" type="text" id="username" name="username">
-        <div class="invalid-feedback">
-          username Required.
-        </div>
-      </div>
-
-      <div class="mb-3">
-        <label class="form-label" for="password">password</label>
-        <input autocomplete="off" required class="form-control" type="password" id="password" name="password">
-        <div class="invalid-feedback">
-          password Required.
-        </div>
-      </div>
-
-
-      <!-- <div class="mb-3">
-        <label class="form-label" for="confirm-password">confirm-password</label>
-        <input required class="form-control" type="password" id="confirm-password" name="confirm-password">
-      </div> -->
-
-      <div class="mb-3">
-        <button class="btn btn-success" type="submit">Sign up</button>
-      </div>
-    </form>
+    </div>
   </div>
 </div>
