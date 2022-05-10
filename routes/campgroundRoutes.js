@@ -13,8 +13,7 @@ const {
 } = require("../controllers/campgroundController");
 // middlewares
 const { isLoggedIn, isCampgroundAutor, ValidateCampground, handle_error, page_not_found, bodyFileParser } = require("../controllers/middlewares");
-const multer = require('multer')
-const upload = multer({dest: 'uploads/'})
+
 
 // View all
 router.get("/", campgrounds_index);

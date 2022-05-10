@@ -1,7 +1,6 @@
 const Campground = require("../models/campground");
 const catchAsync = require("../utils/catchAsync");
 const createCampground = require("../utils/createCampground");
-const { updateCampground, deleteImages } = require("../utils/updateCampground");
 // No longer needs ExpressError -- Moved to middleware
 // No longer Need joiSchemas -- Moved to middleware
 
@@ -90,25 +89,27 @@ const campgrounds_edit_get = catchAsync(async (req, res) => {
 const campgrounds_edit_put = catchAsync(async (req, res) => {
   const { id } = req.params;
 
-  const oldCamp = await Campground.findById(id);
-  const oldImages = oldCamp.images;
+  const campground = await Campground.findById(id);
 
-  // Todo: 'Try to' Put These On the model schema, Dumbass!!
-  const newCampgroundData = updateCampground({
+  const status = await campground.updateCampground({
     campgroundBody: req.body.campground,
-    imageFiles: req.files,
-    oldImages,
+    newImageFiles: req.files,
+    imagesToDelete: req.body.deleteImages,
   });
-  const campground = await Campground.findByIdAndUpdate(
-    id,
-    { ...newCampgroundData },
-    { runValidators: true }
-  );
-  // Delete Images
-  if (req.body.deleteImages?.length) {
-    await deleteImages(campground, req.body.deleteImages);
+
+  // Errors
+  let errorMsg = "";
+  if (status === -1) errorMsg = "Couldn't Update camp";
+  if (status === -2)
+    errorMsg = "Network Error!! Couldn't Delete images from cloudinary";
+  if (status === -3) errorMsg = "Couldn't Delete Images From mongo";
+
+  if (errorMsg !== "") {
+    req.flash("error", errorMsg);
+    return res.redirect(`/campgrounds/${campground._id}`);
   }
 
+  // Success
   req.flash("success", "Campground Updated Successfully");
   res.redirect(`/campgrounds/${campground._id}`);
 });
