@@ -1,7 +1,12 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const Review = require("./review");
-const cloudinary  = require("../configs/multer-config/cloudinary.config");
+// For Image Upload
+const cloudinary = require("../configs/multer-config/cloudinary.config");
+// For location and maps
+const mbxGeocoding = require('@mapbox/mapbox-sdk/services/geocoding');
+const mapboxToken = process.env.MAPBOX_TOKEN;
+const geocoder = mbxGeocoding({ accessToken: mapboxToken });
 
 const ImagesSchema = new Schema({
   filename: String,
@@ -27,8 +32,19 @@ const CampgroundSchema = new Schema(
       required: true,
     },
     location: {
-      type: String,
-      required: true,
+      name: {
+        type: String,
+        required: true,
+      },
+      type: {
+        type: String,
+        enum: ["Point"],
+        required: true,
+      },
+      coordinates: {
+        type: [Number],
+        required: true,
+      },
     },
     author: {
       type: Schema.Types.ObjectId,
@@ -48,25 +64,66 @@ const CampgroundSchema = new Schema(
   { timestamps: true }
 );
 
+CampgroundSchema.methods.constructCampground = async function(campgroundBody, ImageFiles) {
+  // Parse Images
+  const images = ImageFiles ? ImageFiles.map((f) => ({ url: f.path, filename: f.filename })) : [];
+  
+  // Parse Location
+  const response = await geocoder.forwardGeocode({
+    query: campgroundBody.location,
+    limit: 1
+  }).send()
+  campgroundBody.location = {
+    name: campgroundBody.location,
+    coordinates: response.body.features[0].geometry.coordinates,
+    type: 'Point'
+  }
+  // Construct
+  this.title = campgroundBody.title;
+  this.price = campgroundBody.price;
+  this.location = campgroundBody.location;
+  this.description = campgroundBody.description;
+  this.author = campgroundBody.author;
+  this.images = images;
+
+  return this
+}
+
+
 CampgroundSchema.methods.updateCampground = async function ({
   campgroundBody,
   newImageFiles,
   imagesToDelete,
 }) {
+  // Parse Images
   const newimages = newImageFiles.map((f) => ({
     url: f.path,
     filename: f.filename,
   }));
 
+  // Parse Location
+  const response = await geocoder.forwardGeocode({
+    query: campgroundBody.location,
+    limit: 1
+  }).send()
+  campgroundBody.location = {
+    name: campgroundBody.location,
+    coordinates: response.body.features[0].geometry.coordinates,
+    type: 'Point'
+  }
+
   // Update Camp
   try {
-    await this.updateOne({
-      title: campgroundBody.title,
-      price: campgroundBody.price,
-      location: campgroundBody.location,
-      description: campgroundBody.description,
-      images: [...this.images, ...newimages],
-    }, { runValidators: true });
+    await this.updateOne(
+      {
+        title: campgroundBody.title,
+        price: campgroundBody.price,
+        location: campgroundBody.location,
+        description: campgroundBody.description,
+        images: [...this.images, ...newimages],
+      },
+      { runValidators: true }
+    );
   } catch (e) {
     console.log(e);
     return -1;
@@ -83,16 +140,18 @@ CampgroundSchema.methods.updateCampground = async function ({
     }
     // Remove images from Mongo
     try {
-      await this.updateOne({
-        $pull: { images: { filename: { $in: imagesToDelete } } },
-      }, { runValidators: true });
+      await this.updateOne(
+        {
+          $pull: { images: { filename: { $in: imagesToDelete } } },
+        },
+        { runValidators: true }
+      );
     } catch (e) {
       console.log(e);
       return -3;
     }
   }
 };
-
 
 CampgroundSchema.post("findOneAndDelete", async (doc) => {
   if (doc) await Review.deleteMany({ _id: { $in: doc.reviews } });
@@ -105,6 +164,5 @@ CampgroundSchema.post("findOneAndDelete", async (doc) => {
 });
 
 const Campground = mongoose.model("Campground", CampgroundSchema);
-
 
 module.exports = Campground;

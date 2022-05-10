@@ -1,6 +1,5 @@
 const Campground = require("../models/campground");
 const catchAsync = require("../utils/catchAsync");
-const createCampground = require("../utils/createCampground");
 // No longer needs ExpressError -- Moved to middleware
 // No longer Need joiSchemas -- Moved to middleware
 
@@ -49,19 +48,16 @@ const campgrounds_new_get = (req, res) => {
  * 3. View
  *  No Action
  */
+
 const campgrounds_new_post = catchAsync(async (req, res, next) => {
   // no need to get the author --(from users collections)-- It's already in req.user (local vars)
-  const newCamp = createCampground({
-    CampgroundModel: Campground,
-    campgroundBody: req.body.campground,
-    imageFiles: req.files,
-    userId: req.user._id,
-  });
-  // const newCamp = await new Campground({ ...req.body.campground }); // create camp ground
-  // newCamp.author = req.user._id; // Set author
-  await newCamp.save();
+  req.body.campground.author = req.user._id
+  const campground = new Campground();
+  await campground.constructCampground(req.body.campground, req.files)
+  await campground.save()
+
   req.flash("success", "New Campground Created Successfully");
-  res.redirect(`/campgrounds/${newCamp._id}`);
+  res.redirect(`/campgrounds/${campground._id}`);
 });
 
 const campgrounds_edit_get = catchAsync(async (req, res) => {
