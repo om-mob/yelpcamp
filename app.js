@@ -19,6 +19,9 @@ const reviewRoutes = require("./routes/reviewRoutes");
 const userRoutes = require("./routes/userRoutes");
 // Middlewares -- for Error Handling
 const { page_not_found, handle_error } = require("./controllers/middlewares");
+// Security
+const mongoSanatize = require('express-mongo-sanitize')
+const helmetContentSecurityPolicy = require('./configs/helmet.config')
 
 
 // General Settings
@@ -51,6 +54,10 @@ mongoose
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 app.use(express.static(path.join(__dirname, "public")));
+
+// Security
+app.use(mongoSanatize())
+app.use(helmetContentSecurityPolicy)
 
 // sessions
 app.use(session(sessionConfig));
