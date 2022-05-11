@@ -1,6 +1,24 @@
+const MongoStore = require("connect-mongo");
+
+// const dbUrl = "mongodb://localhost:27017/yelp-camp";
+const dbUrl = process.env.DB_URL;
+const secret = process.env.SECRET || "secret"
+
+const MongoStoreOptions = {
+  mongoUrl: dbUrl,
+  // crypto: {
+  //   secret,
+  // },
+  // touchAfter: 24 * 60 * 60,
+};
+
 const sessionConfig = {
-  name: 'session',
-  secret: "secret",
+  store: MongoStore.create({
+    mongoUrl: dbUrl,
+    // secret: "secret",
+  }),
+  name: "session",
+  secret,
   resave: false,
   saveUninitialized: true,
   cookie: {

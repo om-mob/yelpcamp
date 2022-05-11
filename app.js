@@ -27,6 +27,8 @@ const helmetContentSecurityPolicy = require('./configs/helmet.config')
 // General Settings
 const app = express();
 const port = process.env.PORT || 8080;
+const dbUrl = process.env.DB_URL || "mongodb://localhost:27017/yelp-camp";
+// const dbUrl = "mongodb://localhost:27017/yelp-camp"
 
 
 // Settings
@@ -37,7 +39,7 @@ app.set("view engine", "ejs");
 
 //connect to Database
 mongoose
-  .connect("mongodb://localhost:27017/yelp-camp")
+  .connect(dbUrl)
   .then((result) => {
     console.log("connected to database");
     app.listen(port, () => {
