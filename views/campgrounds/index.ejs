@@ -26,7 +26,7 @@
 
   <% campgrounds.sort((a,b ) => b.reviews.length - a.reviews.length).forEach(camp => { %>
   <div class="col">
-    <div class="card h-100">
+    <div class="card h-100 shadow-sm p-3 mb-5 bg-body rounded">
 
       <!-- Camp Starts Here -->
       <img class="img-fluid" src="<%= camp.images?.[0]?.url %>" alt="">
