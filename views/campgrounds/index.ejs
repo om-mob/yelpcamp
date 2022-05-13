@@ -1,6 +1,21 @@
 <% layout('layouts/boilerplate') %>
 <div id="cluster-map"></div>
 
+<style>
+  .thumb-post img {
+    object-fit: contain;
+    object-position: center; /* Center the image within the element */
+    width: 100%;
+    height: 250px;
+    margin-bottom: 1rem;
+  }
+
+  .card-text {
+    max-height: 50px;
+    overflow: hidden;
+  }
+</style>
+
 <!-- <h1>Campgrounds</h1>
 <% //campgrounds.sort((a,b ) => b.reviews.length - a.reviews.length).forEach(camp => { %>
 <div class="card mb-3 col">
@@ -26,7 +41,7 @@
 
   <% campgrounds.sort((a,b ) => b.reviews.length - a.reviews.length).forEach(camp => { %>
   <div class="col">
-    <div class="card h-100 shadow-sm p-3 mb-5 bg-body rounded">
+    <div class="card h-100 shadow-sm p-3 mb-5 bg-body rounded thumb-post">
 
       <!-- Camp Starts Here -->
       <img class="img-fluid" src="<%= camp.images?.[0]?.url %>" alt="">
