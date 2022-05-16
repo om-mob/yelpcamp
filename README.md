@@ -41,6 +41,18 @@ npm install
 - [ejs](https://ejs.co/) - Embedded JavaScript templating
 - [passport.js](https://www.passportjs.org/) - Simple, unobtrusive authentication for Node.js.
 
+## Middlewares
+- [method-override](https://expressjs.com/en/resources/middleware/method-override.html) - Handles Delete and Put Requests.
+- [express-session](https://github.com/expressjs/session) - Handles Session. *required by passport and flash.*
+- [connect-flash](https://github.com/jaredhanson/connect-flash) - storing flash messages, used in combination with redirects.
+- [passport](https://www.passportjs.org/) - Handles user authentication.
+- [connect-mongo](https://www.npmjs.com/package/connect-mongo)  - *not a middleware* -  works with express-session as a *Session Stores* instead of using memory.
+- [multer](https://github.com/expressjs/multer) - Parses the Request body and files.
+#### security
+- [helmet](https://github.com/helmetjs/helmet) - helps secure the app by setting various HTTP headers. It's not a silver bullet, but it can help!
+- [express-mongo-sanitize](https://github.com/fiznool/express-mongo-sanitize) - *not a middleware* - used with **joi** to validate user inputs when creating or editing a campground, and when writing a reveiw.
+- [joi](https://joi.dev/api/?v=17.6.0) handles user input validation.
+
 <hr />
 
 Create a .env file (or just export manually in the terminal) in the root of the project and add the following:  
