@@ -2,7 +2,7 @@ This application is/was hosted on [Heroku](https://yelp-camp-58.herokuapp.com/).
 
 # 🏕 YelpCamp
 
-<a href="https://my-campground.herokuapp.com/">
+<a href="https://yelp-camp-58.herokuapp.com/">
  <div align="center">
   <img src="public/images/Screenshot-YelpCamp-1.png" alt="campground-screenshow">
  </div>
