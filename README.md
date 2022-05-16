@@ -4,7 +4,7 @@ This application is/was hosted on [Heroku](https://yelp-camp-58.herokuapp.com/).
 
 <a href="https://my-campground.herokuapp.com/">
  <div align="center">
-  <img src="/images/Screenshot-YelpCamp-1.png" alt="campground-screenshow">
+  <img src="public/images/Screenshot-YelpCamp-1.png" alt="campground-screenshow">
  </div>
 </a>
 
